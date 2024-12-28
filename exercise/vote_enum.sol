@@ -1,32 +1,3 @@
-/*
-
-Objective:
-Use `enum` to manage the state of a voting system and complete the contract by filling in the missing logic.
-
--------
-
-Tasks:
-1) Constructor:
-
-Initialize the contract with the phase set to NotStarted.
-
-2) Phase Transition Logic:
-
-Implement the nextPhase function to cycle through the phases in the correct order (NotStarted → Registration → Voting → Ended).
-
-3) Determine the Winner:
-
-Implement the logic to calculate the candidate with the highest votes in getWinner.
-
--------
-
-Hints:
-Use the uint8 representation of enum for transitioning phases (VotingPhase(uint8(currentPhase) + 1)).
-Use a loop to find the candidate with the highest votes.
-*/
-
-
-
 pragma solidity ^0.8.0;
 
 contract VotingSystem {
@@ -51,14 +22,15 @@ contract VotingSystem {
         _;
     }
 
-    // TODO: Write a constructor to initialize the contract in the NotStarted phase
+    // Constructor to initialize the contract in the NotStarted phase
     constructor() {
-        // Initialize with appropriate phase
+        currentPhase = VotingPhase.NotStarted;
     }
 
     // Function to move to the next phase
     function nextPhase() public {
-        // TODO: Implement logic to move to the next phase
+        require(currentPhase != VotingPhase.Ended, "Already in the final phase");
+        currentPhase = VotingPhase(uint8(currentPhase) + 1);
     }
 
     // Register a candidate
@@ -79,6 +51,18 @@ contract VotingSystem {
 
     // Get the winner (can only be called after voting ends)
     function getWinner() public view inPhase(VotingPhase.Ended) returns (string memory) {
-        // TODO: Implement logic to determine the candidate with the most votes
+        require(candidates.length > 0, "No candidates registered");
+
+        string memory winner = candidates[0];
+        uint256 highestVotes = votes[winner];
+
+        for (uint256 i = 1; i < candidates.length; i++) {
+            if (votes[candidates[i]] > highestVotes) {
+                winner = candidates[i];
+                highestVotes = votes[candidates[i]];
+            }
+        }
+
+        return winner;
     }
 }
