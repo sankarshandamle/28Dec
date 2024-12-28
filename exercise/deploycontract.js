@@ -74,15 +74,10 @@ async function submitData(contractInstance, data) {
     }
 }
 
-// TODO: complete teh getData function
 async function getData(contractInstance) {
     try {
         // Call the getData function to retrieve the stored data
-        // Hint: await contractInstance.methods.<smart-contract-function-name>.call();
-        // That's all!
-        // store the return value in a variable called `result`
-
-        // <<line goes here>>
+        const result = await contractInstance.methods.getData().call();
         console.log('Stored Data:', result);
         return result;
     } catch (error) {
@@ -94,11 +89,8 @@ deploy().then(async (contractInstance) => {
     // Submit data
     await submitData(contractInstance, "Happy New Year!");
 
-    // TODO: Retrieve the data
-    // Hint: Use `await` and call the `getData` function with the `contractInstance` instance
-    // store the return output in a variable called `data`
-
-    // <add your code here>
+    // Retrieve the data
+    const data = await getData(contractInstance);
     console.log('Data retrieved:', data);
 }).catch(error => {
     console.error('Deployment failed:', error);
